@@ -1,0 +1,31 @@
+<h1>📍 Любимые места в природе Кыргызстана</h1>
+
+{% if user.is_authenticated %}
+  <p>Привет, {{ user.username }} | <a href="{% url 'logout' %}">Выйти</a></p>
+  <p><a href="{% url 'add_place' %}">➕ Добавить место</a></p>
+{% else %}
+  <p><a href="{% url 'login' %}">Войти</a> или <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+{% endif %}
+
+<form method="get" action="">
+  <input type="text" name="q" placeholder="Поиск по названию" value="{{ query|default:'' }}">
+  <button type="submit">🔍</button>
+</form>
+
+<ul>
+  {% for place in places %}
+    <li>
+      <strong>{{ place.title }}</strong> ({{ place.location }})<br>
+      {{ place.description }}<br>
+      {% if place.image_url %}
+        <img src="{{ place.image_url }}" width="200"><br>
+      {% endif %}
+      {% if user.is_authenticated %}
+        <a href="{% url 'edit_place' place.pk %}">✏️</a>
+        <a href="{% url 'delete_place' place.pk %}">🗑️</a>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>Пока нет добавленных мест.</li>
+  {% endfor %}
+</ul>
